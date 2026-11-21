@@ -1,5 +1,6 @@
-"""Builds the Syrian revolution timeline video: HTML slides -> PNG, espeak-ng narration, ffmpeg assembly."""
+"""Builds the Syrian revolution timeline video: HTML slides -> PNG, edge-tts neural narration, ffmpeg assembly."""
 import subprocess, json, os, sys
+from tashkeel import N
 
 D = os.path.dirname(os.path.abspath(__file__))
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(D, "syria.mp4")
@@ -92,7 +93,13 @@ await b.close();})()""" % n, B], check=True)
 
 clips = []
 for i, (*_, narr) in enumerate(S):
-    sh("espeak-ng", "-v", "ar", "-s", "128", "-p", "38", "-a", "160", "-w", f"{B}/n{i:02}.wav", narr)
+    # Microsoft neural voice (Syrian male) via edge-tts; needs speech.platform.bing.com reachable.
+    proxy = ["--proxy", os.environ["HTTPS_PROXY"]] if os.environ.get("HTTPS_PROXY") else []
+    sh("edge-tts", *proxy, "--voice", "ar-SY-LaithNeural", "--rate=-8%", "--text", N[i], "--write-media", f"{B}/raw{i:02}.mp3")
+    # light room tone and even loudness across scenes
+    sh("ffmpeg", "-y", "-i", f"{B}/raw{i:02}.mp3", "-af",
+       "highpass=f=60,aecho=0.9:0.6:40|80:0.10|0.05,loudnorm=I=-16:TP=-1.5",
+       "-ar", "44100", f"{B}/n{i:02}.wav")
     t = dur(f"{B}/n{i:02}.wav") + 2.0  # 1s lead-in, 1s tail
     fr = int(t * 25)
     sh("ffmpeg", "-y", "-loop", "1", "-i", f"{B}/s{i:02}.png", "-i", f"{B}/n{i:02}.wav",
