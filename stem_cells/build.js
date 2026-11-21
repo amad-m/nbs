@@ -181,7 +181,7 @@ async function icon(name, color) {
     T(s, h, { x: 5.6, y: y - 0.05, w: 5.9, h: 0.55, fontSize: 20, bold: true, color: C.text2, margin: 0 });
     T(s, b, { x: 5.6, y: y + 0.5, w: 5.9, h: 0.9, fontSize: 15, margin: 0 });
   }
-  const stats = [["1968", "أول زراعة ناجحة لنخاع العظم"], ["2012", "جائزة نوبل لاكتشاف الخلايا المحفزة (ياماناكا)"]];
+  const stats = [["1968", "أول زراعة ناجحة لنخاع العظم من متبرع غير توأم"], ["2012", "جائزة نوبل لاكتشاف الخلايا المحفزة (ياماناكا)"]];
   for (let i = 0; i < 2; i++) {
     const y = 1.65 + i * 2.55;
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 0.6, y, w: 4.4, h: 2.3, rectRadius: 0.15, fill: { color: C.text2 }, line: { type: "none" } });
@@ -226,6 +226,30 @@ async function icon(name, color) {
     T(s, sum[i], { x: 1.5, y, w: 10.3, h: 0.7, fontSize: 20, color: C.background1, valign: "middle", margin: 0 });
   }
   T(s, "شكراً لحسن استماعكم", { x: 0.6, y: 6.6, w: 12.13, h: 0.5, fontSize: 18, italic: true, color: H.accent4, align: "center" });
+
+  // 10. References
+  pres.addSection({ title: "المراجع" });
+  s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "المراجع" });
+  s.addText("المراجع العلمية", { placeholder: "title" });
+  const refs = [
+    ["تعريف الخلايا الجذعية وخصائصها وأنواعها", "National Institutes of Health (NIH). Stem Cell Information – Stem Cell Basics.", "https://stemcells.nih.gov/"],
+    ["مدخل عام موثوق للخلايا الجذعية", "U.S. National Library of Medicine. MedlinePlus: Stem Cells.", "https://medlineplus.gov/stemcells.html"],
+    ["الأنواع والاستخدامات العلاجية والبحثية", "Mayo Clinic. Stem cells: What they are and what they do.", "https://www.mayoclinic.org/tests-procedures/bone-marrow-transplant/in-depth/stem-cells/art-20048117"],
+    ["التحديات والتحذير من العلاجات غير المثبتة", "International Society for Stem Cell Research (ISSCR). The ISSCR Guide to Stem Cell Treatments, 2024.", "https://www.isscr.org/patients"],
+    ["اكتشاف الخلايا المحفزة وجائزة نوبل 2012", "The Nobel Assembly at Karolinska Institutet. Press release: The Nobel Prize in Physiology or Medicine 2012.", "https://www.nobelprize.org/prizes/medicine/2012/press-release/"],
+    ["أول زراعة ناجحة لنخاع العظم عام 1968", "M Health Fairview. Celebrating 50 years of blood and marrow transplant history (Robert A. Good, 1968).", "https://www.mhealthfairview.org/blog/aug-24-celebrating-50-years-blood-and-marrow-transplant-history"],
+  ];
+  for (let i = 0; i < refs.length; i++) {
+    const [topic, cite, url] = refs[i], y = 1.55 + i * 0.88;
+    s.addShape(pres.shapes.OVAL, { x: 12.18, y: y + 0.08, w: 0.55, h: 0.55, fill: { color: H.accent3 }, line: { type: "none" } });
+    T(s, String(i + 1), { x: 12.18, y: y + 0.08, w: 0.55, h: 0.55, fontSize: 16, bold: true, color: C.background1, align: "center", valign: "middle", margin: 0 });
+    T(s, topic, { x: 0.6, y, w: 11.35, h: 0.36, fontSize: 15, bold: true, color: C.text2, margin: 0 });
+    s.addText([
+      { text: cite + " ", options: { color: H.dk1 } },
+      { text: url, options: { hyperlink: { url }, color: H.accent1, underline: { style: "sng" } } },
+    ], { isTextBox: true, x: 0.6, y: y + 0.37, w: 11.35, h: 0.42, fontSize: 11, align: "right", rtlMode: false, lang: "en-US", margin: 0, valign: "top", fit: "shrink" });
+  }
+  s.addNotes("المراجع مأخوذة من مؤسسات علمية وطبية رسمية. تمت مراجعة الروابط في نوفمبر 2026.");
 
   await pres.writeFile({ fileName: "stem_cells.pptx" });
   await applyTheme("stem_cells.pptx", THEME);
